@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Event</title>
+	<style>
+		body {
+			background-color: #282828;
+		}
+		header {
+			height: 40px;
+			line-height: 40px;
+			text-align: center;
+			background-color: #287488;
+			color: #fffbfb;
+			margin: 0 50px;
+			margin-bottom: 40px;
+			border-radius: 6px;
+		}
+		label {
+			vertical-align: middle;
+			cursor: pointer;
+			font-family: Arial, Helvetica, sans-serif;
+		}
+		input {
+			vertical-align: middle;
+			margin: 0 -2px 0 15px;
+			cursor: pointer;
+		}
+		div  {
+			margin: auto;
+			display: table;
+			min-width: 10px;
+			min-height: 10px;
+			padding: 10px;
+			background-color: #5c9e88;
+			border-radius: 50%;
+			border: 1px solid #08eded;
+			cursor: pointer;
+		}
+		#listenarea:nth-child(1n) {
+			background-color: rgb(64, 61, 61);
+			border: none;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<form action="">
+			<input type="radio" name="capture" id="up" checked>
+			<label for="up">всплытие</label>
+			<input type="radio" name="capture" id="down">
+			<label for="down">погружение</label>
+		</form>
+	</header>
+	<div id="listenarea">
+	</div>
+	<script>
+		document.forms[0].onchange = function(e) {
+			switch(e.srcElement.id) {
+				case "up":
+					setListeners(false);
+					break;
+				case "down":
+					setListeners(true);
+					break;
+			}
+		};
+		setListeners(false);
+
+		function setListeners(capture) {
+			let conteiner = document.getElementById("listenarea");
+			let baseColor = "#5c9e88";
+			let pingColor = "#eee";
+			let lightTime = 100;
+			let stepTime = 100;
+			let delayTime = 0;
+			let numElement = 30;
+			let numPing = 0;
+
+			if (conteiner.childElementCount > 0) {
+				conteiner.firstElementChild?.remove()
+			}
+			let div = conteiner.appendChild(document.createElement("div"));
+			for (let i = 0; i < numElement; i++) {
+				div.addEventListener("click", function(e) {
+					let delay = delayTime;
+					setTimeout( () => {
+						this.style.backgroundColor = pingColor;
+						setTimeout(() => this.style.backgroundColor = baseColor, lightTime);
+					}, delay);
+					numPing++;
+					delayTime += stepTime;
+					if (numPing == numElement) {
+						delayTime = 0;
+						numPing = 0;
+					}
+				}, {capture: capture});
+				div = div.appendChild(document.createElement("div"));
+			}
+		}
+	</script>
+</body>
+</html>
