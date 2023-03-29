@@ -33,10 +33,16 @@
 			min-width: 10px;
 			min-height: 10px;
 			padding: 10px;
-			background-color: #5c9e88;
+			background-color: #50957e;
 			border-radius: 50%;
-			border: 1px solid #08eded;
+			border: 1px solid #098e8e;
 			cursor: pointer;
+		}
+		div[data-ping="on"] {
+			background-color: #f0faf8;
+		}
+		div[data-ping="off"] {
+			background-color: #3a6a5a;
 		}
 		#listenarea:nth-child(1n) {
 			background-color: rgb(64, 61, 61);
@@ -70,33 +76,37 @@
 
 		function setListeners(capture) {
 			let conteiner = document.getElementById("listenarea");
-			let baseColor = "#5c9e88";
-			let pingColor = "#eee";
-			let lightTime = 100;
-			let stepTime = 100;
-			let delayTime = 0;
+			let lightTime = 75;
+			let stepTime = 75;
 			let numElement = 30;
 			let numPing = 0;
 
 			if (conteiner.childElementCount > 0) {
 				conteiner.firstElementChild?.remove()
 			}
-			let div = conteiner.appendChild(document.createElement("div"));
+
+			let div = document.createElement('div');
+			conteiner.appendChild(div);
 			for (let i = 0; i < numElement; i++) {
+
 				div.addEventListener("click", function(e) {
-					let delay = delayTime;
+					let delay = stepTime * numPing;
 					setTimeout( () => {
-						this.style.backgroundColor = pingColor;
-						setTimeout(() => this.style.backgroundColor = baseColor, lightTime);
+						this.dataset.ping = "on";
+						setTimeout(() => this.dataset.ping = "off", lightTime);
+						setTimeout(() => this.dataset.ping = "0", lightTime +1000);
 					}, delay);
 					numPing++;
-					delayTime += stepTime;
-					if (numPing == numElement) {
-						delayTime = 0;
+					if (capture == false && i == 0) {
+						numPing = 0;
+					} else if (capture == true && e.currentTarget == e.target) {
 						numPing = 0;
 					}
 				}, {capture: capture});
-				div = div.appendChild(document.createElement("div"));
+
+				if (i + 1 < numElement) {
+					div = div.appendChild(document.createElement("div"));
+				}
 			}
 		}
 	</script>
